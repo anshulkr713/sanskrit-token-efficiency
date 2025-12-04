@@ -11,7 +11,7 @@ FIG_DIR.mkdir(parents=True, exist_ok=True)
 def main():
     df = pd.read_csv(RES_PATH)
 
-    # For clarity, create a human-readable label for each (lang, segment_type)
+    
     def label_row(row):
         if row["segment_type"] == "sa_verse":
             return "SA verse"
@@ -27,7 +27,7 @@ def main():
 
     df["segment_label"] = df.apply(label_row, axis=1)
 
-    # We'll preserve this order on the x-axis
+ 
     seg_order = [
         "SA verse",
         "EN translation",
@@ -37,12 +37,11 @@ def main():
     ]
     df = df[df["segment_label"].isin(seg_order)]
 
-    # 1) Mean tokens per segment label per tokenizer
     token_cols = ["gpt_tokens", "o200k_tokens", "gemini_tokens", "spm_tokens"]
     mean_tokens = (
         df.groupby("segment_label")[token_cols]
         .mean()
-        .loc[seg_order]  # enforce order
+        .loc[seg_order]  
         .rename(columns={
             "gpt_tokens": "GPT-cl100k",
             "o200k_tokens": "GPT-o200k",
@@ -73,7 +72,7 @@ def main():
     plt.close()
     print(f"Saved {out_path1}")
 
-    # 2) Mean characters per token per segment label per tokenizer
+    
     chars_per_cols = [
         "chars_per_gpt_tok",
         "chars_per_o200k_tok",
