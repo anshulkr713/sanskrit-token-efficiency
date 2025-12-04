@@ -11,7 +11,7 @@ FIG_DIR.mkdir(parents=True, exist_ok=True)
 def main():
     df = pd.read_csv(RES_PATH)
 
-    # We’ll focus on these tokenizers
+    
     token_cols = ["gpt_tokens", "o200k_tokens", "gemini_tokens", "spm_tokens"]
     chars_per_cols = [
         "chars_per_gpt_tok",
@@ -21,7 +21,7 @@ def main():
     ]
     tokenizer_labels = ["GPT-cl100k", "GPT-o200k", "Gemini", "SPM"]
 
-    # 1) Mean tokens per sentence per language
+   
     mean_tokens = (
         df.groupby("lang")[token_cols]
         .mean()
@@ -33,11 +33,10 @@ def main():
         })
     )
 
-    # Sort languages in a sensible order
+  
     lang_order = ["en", "hi", "sa", "sa_latn"]
     mean_tokens = mean_tokens.reindex(lang_order)
 
-    # Plot: Mean tokens per sentence
     plt.figure(figsize=(8, 5))
     x = range(len(lang_order))
     width = 0.2
@@ -60,7 +59,6 @@ def main():
     plt.close()
     print(f"Saved {out_path1}")
 
-    # 2) Mean chars per token (token efficiency)
     mean_chars_per = (
         df.groupby("lang")[chars_per_cols]
         .mean()
