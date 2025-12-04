@@ -63,7 +63,7 @@ def main():
         else:
             raise ValueError(f"Unknown lang: {lang}")
 
-    # ---------- Gemini tokenizer setup ----------
+
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise EnvironmentError("GEMINI_API_KEY environment variable not set.")
@@ -74,21 +74,21 @@ def main():
         try:
             resp = gemini_model.count_tokens(text)
             
-            # SAFETY SLEEP: 0.04s delay caps us at ~1500 RPM (well below the 3000 limit)
+           
             time.sleep(0.04) 
             
             return resp.total_tokens
         except exceptions.ResourceExhausted:
             print(f"\nRate limit hit! Cooling down for 10 seconds...")
             time.sleep(10)
-            # Retry once recursively
+            
             try:
                 resp = gemini_model.count_tokens(text)
                 return resp.total_tokens
             except:
                 return -1
         except Exception as e:
-            # Catch 404s or other random network blips
+          
             print(f"Error: {e}")
             return -1
 
@@ -104,7 +104,7 @@ def main():
         hi_trans = r.get("translation_in_hindi", "")
         hi_mean = r.get("meaning_in_hindi", "")
 
-        # helper to add one segment
+       
         def add_segment(text, lang, segment_type):
             if pd.isna(text):
                 return
@@ -138,14 +138,14 @@ def main():
                 "chars_per_spm_tok": chars / spm_tokens if spm_tokens > 0 else None,
             })
 
-        # Sanskrit root verse (compact)
+        
         add_segment(sa_verse, "sa", "sa_verse")
 
-        # English translation + meaning
+       
         add_segment(en_trans, "en", "en_trans")
         add_segment(en_mean, "en", "en_mean")
 
-        # Hindi translation + meaning
+    
         add_segment(hi_trans, "hi", "hi_trans")
         add_segment(hi_mean, "hi", "hi_mean")
 
@@ -153,7 +153,7 @@ def main():
     out_df.to_csv(OUT_PATH, index=False)
     print(f"Saved results to {OUT_PATH}")
 
-    # quick summaries
+ 
     print("\n=== GPT (cl100k) tokens per segment type (mean) ===")
     print(out_df.groupby(["lang", "segment_type"])["gpt_tokens"].mean())
 
