@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 import sentencepiece as spm
 
-ROOT = Path(__file__).resolve().parents[1]  # from tokenizers/ up to project root
+ROOT = Path(__file__).resolve().parents[1]  
 PROC_PATH = ROOT / "data" / "processed" / "parallel_gita.csv"
 OUT_DIR = ROOT / "tokenizers"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -35,7 +35,7 @@ def main():
     if not PROC_PATH.exists():
         raise FileNotFoundError(f"{PROC_PATH} not found. Run prepare_parallel_gita.py first.")
 
-    # now include sa_latn as a separate 'language'
+   
     for lang in ["sa", "sa_latn", "hi", "en"]:
         train_spm(lang, vocab_size=8000)
 
