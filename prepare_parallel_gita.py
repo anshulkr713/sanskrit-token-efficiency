@@ -35,18 +35,18 @@ def main():
         hi = str(r["translation_in_hindi"]) if not pd.isna(r["translation_in_hindi"]) else ""
         en = str(r["translation_in_english"]) if not pd.isna(r["translation_in_english"]) else ""
 
-        # skip if any critical piece missing
+        
         if not sa or not hi or not en:
             continue
 
-        # Sanskrit (Devanagari)
+        
         rows.append({"verse_id": vid, "lang": "sa", "text": sa})
 
-        # Sanskrit transliteration (Latin) – only if present
+       
         if sa_latn:
             rows.append({"verse_id": vid, "lang": "sa_latn", "text": sa_latn})
 
-        # Hindi & English
+       
         rows.append({"verse_id": vid, "lang": "hi", "text": hi})
         rows.append({"verse_id": vid, "lang": "en", "text": en})
 
