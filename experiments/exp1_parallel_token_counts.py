@@ -28,12 +28,12 @@ def main():
     print(f"Loading data from {DATA_PATH} ...")
     df = pd.read_csv(DATA_PATH)
 
-    # ---------- GPT tokenizers ----------
+
     print("Loading GPT tokenizers (cl100k_base and o200k_base) ...")
     gpt_enc = tiktoken.get_encoding("cl100k_base")
     o200k_enc = tiktoken.get_encoding("o200k_base")
 
-    # ---------- SentencePiece tokenizers ----------
+
     print("Loading SentencePiece tokenizers ...")
     sp_sa = load_spm("sa")
     sp_sa_latn = load_spm("sa_latn")
@@ -52,22 +52,21 @@ def main():
         else:
             raise ValueError(f"Unknown lang: {lang}")
 
-    # ---------- Gemini tokenizer setup ----------
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise EnvironmentError("GEMINI_API_KEY environment variable not set.")
     genai.configure(api_key=api_key)
 
-    # you can use "gemini-1.5-flash" or "gemini-1.5-pro"
+
     
     gemini_model = genai.GenerativeModel("models/gemini-2.5-flash")
     def count_gemini_tokens(text: str) -> int:
         """
         Uses Gemini's count_tokens API for the given text.
         """
-        # The SDK accepts a plain string as contents
+        
         resp = gemini_model.count_tokens(text)
-        # resp.total_tokens is the documented attribute
+       
         return resp.total_tokens
 
     rows = []
@@ -85,7 +84,7 @@ def main():
         try:
             gemini_tokens = count_gemini_tokens(text)
         except Exception as e:
-            # If something fails (rate limit, network, etc.), you can log -1 or skip
+           
             print(f"Gemini token count error on verse_id={verse_id}, lang={lang}: {e}")
             gemini_tokens = -1
 
@@ -108,7 +107,7 @@ def main():
     out_df.to_csv(out_path, index=False)
     print(f"Saved results to {out_path}")
 
-    # quick summaries
+
     print("\n=== GPT (cl100k) tokens per sentence (mean) ===")
     print(out_df.groupby("lang")["gpt_tokens"].mean())
 
